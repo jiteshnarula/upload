@@ -1,0 +1,20 @@
+Where is Angular 3
+
+
+Purpouse of writing * in front of ngIf directives
+
+else in ngIf directive
+
+What is bundle
+
+
+
+what is the purpouse of eventEmitter and why should we use it it is deprecated in Angular3
+	 
+
+How can we use third party libarary(Non Type script library) in angular
+
+Can we import module twice?
+
+
+How to make sure that single instance will be used in an entire application?
