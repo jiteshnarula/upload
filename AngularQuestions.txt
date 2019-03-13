@@ -18,3 +18,1294 @@ Can we import module twice?
 
 
 How to make sure that single instance will be used in an entire application?
+
+ ===================================================================================================
+ import { Component, OnInit } from '@angular/core';
+
+import { Router } from '@angular/router';
+
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
+
+
+
+@Component({
+
+selector: 'app-login',
+
+templateUrl: './login.component.html',
+
+styleUrls: ['./login.component.css']
+
+})
+
+export class LoginComponent implements OnInit {
+
+// Instance Variables - Bydefault public in Typescript
+
+loginForm: FormGroup;
+
+submitted: boolean = false;
+
+invalidLogin: boolean = false;
+
+constructor(private formBuilder: FormBuilder,
+
+private router: Router) { }l̥
+
+onSubmit() {
+
+this.submitted = true;
+
+// If validation failed, it should return 
+
+// to Validate again
+
+if (this.loginForm.invalid) {
+
+return;
+
+}
+
+let username
+
+= this.loginForm.controls.email.value;
+
+if (this.loginForm.controls.email.value
+
+== "admin@gmail.com" &&
+
+this.loginForm.controls.password.value == "123456")
+{
+
+localStorage.setItem("username", username);
+
+this.router.navigate(['emplist']);
+
+}
+
+else {
+
+this.invalidLogin = true;
+
+}
+
+}
+
+ngOnInit() {
+
+this.loginForm = this.formBuilder.group({
+
+email: ['', Validators.required],
+
+password: ['', Validators.required]
+
+});
+
+}
+
+
+
+
+}
+
+=================================
+
+
+
+
+
+
+<br /><br />
+
+<div class="col-md-6 col-md-offset-2">
+
+<h3>Login</h3>
+
+<br />
+
+
+
+
+<!-- Designing Login Form-->
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+<div class="form-group">
+
+<label for="email">Email Address: </label>
+
+<input type="email" class="form-control" formControlName="email"
+id="email" />
+
+
+
+
+<div *ngIf="submitted && loginForm.controls.email.errors" class="error">
+
+<div class="text-danger" *ngIf="loginForm.controls.email.errors.required">
+
+Email is required ..
+
+</div>
+
+</div>
+
+<input type="password" class="form-control" formControlName="password"
+id="pwd" />
+
+<div *ngIf="submitted && loginForm.controls.password.errors" class="error">
+
+<div class="text-danger" *ngIf="loginForm.controls.password.errors.required">
+
+Password is required ..
+
+</div>
+
+</div>
+
+</div>
+
+<button class="btn btn-success">Login</button> &nbsp;
+
+<button class="btn btn-danger" type="reset">Cancel</button>
+
+&nbsp;
+
+<a class="btn btn-warning" [routerLink]="['/home']">
+
+Go to Home</a> <br /><br />
+
+<div *ngIf="invalidLogin" class="error">
+
+<div class="text-danger">
+
+Invalid credentials ..
+
+</div>
+
+</div>
+
+
+
+
+</form>
+
+</div>
+=============================================================================================================================next
+
+email: new FormControl('', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')])
+ pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+ =================================================next
+ 
+ <h1>Reactive form Demos</h1>
+
+<form [formGroup]="form" 
+
+(ngSubmit)="AddUser(form)">
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" name="" value=""
+
+class="form-control" formControlName="name" />
+
+<div 
+
+*ngIf="form.get('name').touched && 
+
+form.get('name').invalid" 
+
+class="alert alert-danger">
+
+<div *ngIf="form.get('name').hasError('required')">
+
+Please Enter Name
+
+</div>
+
+<div *ngIf="form.get('name').hasError('pattern')">
+
+Please Enter Valid Name
+
+</div>
+
+</div>
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text" name="" formControlName="contact"
+
+value="" 
+
+class="form-control" />
+
+
+
+
+<div 
+
+*ngIf="form.get('contact').touched && 
+
+form.get('contact').invalid" 
+
+class="alert alert-danger">
+
+<div *ngIf="form.get('contact').hasError('required')">
+
+Please Enter Name
+
+</div>
+
+<div *ngIf="form.get('contact').hasError('pattern')">
+
+Please Enter Valid Name
+
+</div>
+
+</div>
+
+<label>
+
+Email:
+
+</label>
+
+<input type="text" name="" formControlName="email"
+
+value="" 
+
+class="form-control" />
+
+<div 
+
+*ngIf="form.get('email').touched && 
+
+form.get('email').invalid" 
+
+class="alert alert-danger">
+
+<div *ngIf="form.get('email').hasError('required')">
+
+Please Enter Name
+
+</div>
+
+<div *ngIf="form.get('email').hasError('pattern')">
+
+Please Enter Valid Name
+
+</div>
+
+</div>
+
+</div>
+
+<button type="submit" 
+
+class="btn btn-success">Add User</button>
+
+</form>
+
+<!-- 
+
+<div class="form-control">
+
+<label>
+
+email:
+
+</label>
+
+<input type="text" name="" />
+
+</div>
+
+<div>
+
+
+</div> -->
+
+======================================
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { User } from '../model/User';
+
+
+
+
+@Component({
+
+selector: 'app-reactive-form',
+
+templateUrl: './reactive-form.component.html',
+
+styleUrls: ['./reactive-form.component.css']
+
+})
+
+export class ReactiveFormComponent implements OnInit {
+
+form: FormGroup;
+
+
+
+
+userlist: User[] = []
+
+constructor() { }
+
+
+
+
+ngOnInit() {
+
+
+
+
+this.form = new FormGroup(
+
+{
+
+name: new FormControl('',[Validators.required,
+
+Validators.pattern('[a-zA-Z][a-zA-Z]+')]),
+
+contact: new FormControl('',[Validators.required,
+
+Validators.pattern('[0-9]*')]),
+
+email: new FormControl('',[Validators.required,
+Validators.pattern('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$')])
+
+}
+
+)
+
+}
+
+
+
+
+
+
+
+AddUser(form)
+
+{
+
+this.userlist.push(form.value);
+
+console.log(form.value);
+
+}
+
+}
+
+
+===============================================================================================next
+
+<h1>Reactive form Demos</h1>
+
+<form [formGroup]="form" 
+
+(ngSubmit)="AddUser(form)">
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" name="" value=""
+
+class="form-control" formControlName="name" />
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text" name="" formControlName="contact"
+
+value="" 
+
+class="form-control" />
+
+<label>
+
+Email:
+
+</label>
+
+<input type="text" name="" formControlName="email"
+
+value="" 
+
+class="form-control" />
+
+</div>
+
+<button type="submit" 
+
+class="btn btn-success">Add User</button>
+
+</form>
+
+<!-- 
+
+<div class="form-control">
+
+<label>
+
+email:
+
+</label>
+
+<input type="text" name="" />
+
+</div>
+
+<div>
+
+
+</div> -->
+
+===================================
+
+
+
+import { Component, OnInit } from '@angular/core';
+
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { User } from '../model/User';
+
+
+
+
+@Component({
+
+selector: 'app-reactive-form',
+
+templateUrl: './reactive-form.component.html',
+
+styleUrls: ['./reactive-form.component.css']
+
+})
+
+export class ReactiveFormComponent implements OnInit {
+
+form: FormGroup;
+
+
+
+
+userlist: User[] = []
+
+constructor() { }
+
+
+
+
+ngOnInit() {
+
+
+
+
+this.form = new FormGroup(
+
+{
+
+name: new FormControl('please enter name'),
+
+contact: new FormControl('please enter contact'),
+
+email: new FormControl('please enter email')
+
+}
+
+)
+
+}
+
+
+
+
+
+
+
+AddUser(form)
+
+{
+
+this.userlist.push(form.value);
+
+console.log(form.value);
+
+}
+
+}
+=======================================================next
+
+
+<div>touched : {{ frm.touched }}</div>
+
+<div>untouched : {{ frm.untouched }}</div>
+
+<div>pristine : {{ frm.pristine }}</div>
+
+<div>dirty : {{ frm.dirty }}</div>
+
+<div>valid : {{ frm.valid }}</div>
+
+<div>invalid : {{ frm.invalid }}</div>
+
+<div class="container">
+
+<div class="jumbotron">
+
+<form #frm="ngForm" (ngSubmit)="AddUser(frm)">
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" required pattern="[a-zA-Z][a-zA-Z ]+"
+class="form-control" name="name" #username="ngModel"
+
+ngModel />
+
+
+
+
+<div *ngIf="username?.touched && 
+
+username?.invalid" class="alert 
+
+alert-danger">
+
+<div *ngIf="username.errors?.required">
+
+Name is required
+
+</div>
+
+<div *ngIf="username.errors?.pattern">
+
+Only alphabets
+
+</div>
+
+</div>
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text" class="form-control" 
+
+ngModel 
+
+required
+
+pattern="[0-9]*"
+
+#contact="ngModel"
+
+minlength="10"
+
+maxlength="10"
+
+name="contact" #contact="ngModel" ngModel />
+
+<div *ngIf="contact?.touched && contact?.invalid" class="alert alert-danger">
+
+<div *ngIf="contact.errors?.required">
+
+Please enter Contact Number
+
+
+
+
+</div>
+
+<div *ngIf="contact.errors?.pattern">
+
+Please enter Valid Number
+
+
+</div>
+
+
+</div>
+
+
+
+
+<label>
+
+Email:
+
+</label>
+
+<input required pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" type="text"
+#email="ngModel"
+
+ngModel class="form-control" name="email" />
+
+<div *ngIf="email?.touched && email?.invalid" class="alert alert-danger">
+
+<div *ngIf="email.errors?.required">
+
+Please enter email
+
+</div>
+
+<div *ngIf="email.errors?.pattern">
+
+Please enter valid email
+
+</div>
+
+</div>
+
+
+
+
+<button type="submit" [disabled]="frm.invalid" class="btn
+btn-success">Add New</button>
+
+
+
+
+</div>
+
+</form>
+
+
+
+
+</div>
+
+
+
+
+</div>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="container">
+
+<div class="jumbotron">
+
+<form>
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" class="form-control" name="name" />
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text" class="form-control" name="contact" />
+
+
+
+
+<label>
+
+Email:
+
+</label>
+
+<input type="text" class="form-control" name="email" />
+
+
+</div>
+
+<button type="submit" class="btn btn-success" >Add New </button>
+
+</form>
+
+
+
+
+</div>
+
+
+
+
+</div> -->
+
+<!-- {{frm.value | json}} -->
+
+
+===================================================next
+ pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"/>
+
+
+required
+         pattern="[0-9]*"
+         #contact="ngModel"
+         minlength="10"
+         maxlength="10"
+	=================================================next
+	
+	
+	<div *ngIf="username?.touched && 
+
+username?.invalid" class="alert 
+
+alert-danger">
+
+<div *ngIf="username.errors?.required">
+
+Name is required
+
+</div>
+
+<div *ngIf="username.errors?.pattern">
+
+Only alphabets
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+======================================
+
+
+
+
+
+
+
+
+
+contact pattern 
+
+required
+
+pattern="[0-9]*"
+
+#contact="ngModel"
+
+minlength="10"
+
+maxlength="10"
+
+
+===================================
+
+
+
+
+
+email pattern
+
+
+
+pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+============================================== next
+
+<div class="container">
+
+<div class="jumbotron">
+
+<form #frm="ngForm" (ngSubmit)="AddUser(frm)">
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" 
+
+class="form-control"
+
+name="name" #username="ngModel" ngModel/>
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text"
+
+class="form-control"
+
+name="contact" #contact="ngModel" ngModel/>
+
+
+
+
+<label>
+
+Email:
+
+</label>
+
+<input type="text" #email="ngModel" ngModel
+
+class="form-control" 
+
+name="email" />
+
+<button type="submit" 
+
+class="btn btn-success" 
+
+>Add New</button>
+
+
+</div>
+
+</form>
+
+
+
+
+</div>
+
+
+
+
+</div>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <h1>Template Driven form</h1>
+
+<div>touched : {{ frm.touched }}</div>
+
+<div>untouched : {{ frm.untouched }}</div>
+
+<div>pristine : {{ frm.pristine }}</div>
+
+<div>dirty : {{ frm.dirty }}</div>
+
+<div>valid : {{ frm.valid }}</div>
+
+<div>invalid : {{ frm.invalid }}</div> -->
+
+
+
+
+<!-- <div class="container">
+
+<div class="jumbotron">
+
+<form>
+
+<div class="form-group">
+
+<label>
+
+Name:
+
+</label>
+
+<input type="text" class="form-control" name="name" />
+
+<label>
+
+Contact:
+
+</label>
+
+<input type="text" class="form-control" name="contact" />
+
+
+
+
+<label>
+
+Email:
+
+</label>
+
+<input type="text" class="form-control" name="email" />
+
+
+</div>
+
+<button type="submit" class="btn btn-success" >Add New </button>
+
+</form>
+
+
+
+
+</div>
+
+
+
+
+</div> -->
+
+<!-- {{frm.value | json}} -->
+
+====================================================next
+
+code for names adding and deleting
+
+
+
+
+
+
+
+
+
+<div class="well">
+
+<h1 class="page-header"> Names </h1>
+
+<div class="well">
+
+Enter Name : <input type="text" #refname />
+
+<button class="btn btn-primary"
+
+(click)="addNames(refname.value)">Add Names</button>
+
+</div>
+
+<ul class="list-group">
+
+<li class="list-group-item" 
+
+*ngFor="let name of names;let i=index">
+
+{{name}}
+
+<span class="badge"> {{i+1}}</span>
+
+<button (click)="deleteName(name)">X</button>
+
+</li>
+
+</ul>
+
+</div>
+
+
+-=========================next
+<nav class="navbar navbar-inverse">
+
+<div class="container-fluid">
+
+<!-- Brand and toggle get grouped 
+
+for better mobile display -->
+
+<div class="navbar-header">
+
+<button type="button" 
+
+class="navbar-toggle collapsed" 
+
+data-toggle="collapse"
+
+data-target="#bs-example-navbar-collapse-1" 
+
+aria-expanded="false">
+
+<span class="sr-only">
+
+Toggle navigation </span>
+
+<span class="icon-bar"></span>
+
+<span class="icon-bar"></span>
+
+<span class="icon-bar"></span>
+
+</button>
+
+<a class="navbar-brand" href="#">
+
+Brand</a>
+
+</div>
+
+
+
+
+<!-- Collect the nav links, forms, and 
+
+other content for toggling -->
+
+<div class="collapse navbar-collapse" 
+
+id="bs-example-navbar-collapse-1">
+
+<ul class="nav navbar-nav">
+
+<li class="active"><a routerLink="/">
+
+Home <span class="sr-only">(current)
+
+</span></a></li>
+
+<li><a routerLink="/about">About Us
+
+</a></li>
+
+<li><a routerLink="/contact">Contact</a>
+
+</li>
+
+</ul>
+
+<!-- <ul class="nav navbar-nav navbar-right">
+
+<li><a routerLink="/login">Login</a></li>
+
+<li><a routerLink="/register">Register</a></li>
+
+</ul> -->
+
+</div><!-- /.navbar-collapse -->
+
+</div><!-- /.container-fluid -->
+
+</nav>
+
